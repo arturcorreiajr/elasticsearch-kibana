@@ -12,16 +12,7 @@ data:
     - type: http
       schedule: '@every 600s'
       urls:
-        - "https://api.prudentte.com.br/"
-        - "https://api.prudentte.com.br/readyz"
-        - "https://api.prudentte.com.br/webhook/"
-        - "https://api.prudentte.com.br/onboard/"
-        - "https://api.prudentte.com.br/onboard/readyz"
-        - "https://sandbox.api.prudentte.com.br/"
-        - "https://sandbox.api.prudentte.com.br/readyz/"
-        - "https://sandbox.api.prudentte.com.br/webhook/"
-        - "https://sandbox.api.prudentte.com.br/onboard/"
-        - "https://sandbox.api.prudentte.com.br/onboard/readyz/"
+        - "https://google.com.br/"
       check.response.status: 200
 
 
