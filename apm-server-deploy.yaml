@@ -5,7 +5,7 @@ metadata:
   namespace: elastic
   name: apm-server-config
   labels:
-    app: apm-servera
+    app: apm-server
 data:
   apm-server.yml: |-
     apm-server:
