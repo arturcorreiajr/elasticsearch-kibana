@@ -174,7 +174,11 @@ spec:
         - name: ELASTICSEARCH_USERNAME
           value: elastic
         - name: ELASTICSEARCH_PASSWORD
-          value: PT993r1y7CJeDMAb0Y5r9H98
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-es-elastic-user
+              key: elastic
+          #value: PT993r1y7CJeDMAb0Y5r9H98
         - name: NODE_NAME
           valueFrom:
             fieldRef:
