@@ -16,9 +16,10 @@ spec:
       spec:
         accessModes:
         - ReadWriteOnce
-        awsElasticBlockStore: 
-          fsType: "ext4" 
-          volumeID: "vol-f37a03aa"
+# Atachar volume existente ao elasticsearch
+#        awsElasticBlockStore: 
+#          fsType: "ext4" 
+#          volumeID: "vol-f37a03aa"
         resources:
           requests:
             storage: 1Gi
