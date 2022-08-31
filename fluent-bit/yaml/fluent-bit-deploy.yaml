@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fluent-bit
+  namespace: elastic
+  labels:
+    app: fluent-bit
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fluent-bit
+  template:
+    metadata:
+      labels:
+        app: fluent-bit
+    spec:
+      containers:
+      - name: fluent-bit
+        image: misolucoestech/fluent-bit:latest
+        resources:
+          requests:
+            memory: "64Mi"
+            cpu: "250m"
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 5170
+          name: webinterface
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fluent-bit-svc
+  namespace: elastic
+  labels:
+    service: fluent-bit-svc
+spec:
+  type: NodePort
+  ports:
+  - port: 4000
+    name: webinterface
+  selector:
+    app: fluent-bit-svc

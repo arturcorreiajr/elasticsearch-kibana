@@ -3,7 +3,7 @@ kind: Kibana
 metadata:
   name: kibana
 spec:
-  version: 8.2.0
+  version: 8.4.0
   count: 1
   elasticsearchRef:
     name: elasticsearch
@@ -24,7 +24,7 @@ metadata:
     name: kibana-ingress
 spec:
     rules:
-        - host: kibana.prudentte.com.br
+        - host: kibana.com.br
           http:
               paths:
                   - path: /
