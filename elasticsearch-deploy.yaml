@@ -7,9 +7,20 @@ spec:
   version: 8.4.0
   nodeSets:
   - name: master
-    count: 1
+    count: 2
     config:
       node.roles: ["master"]
+    podTemplate:
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchLabels:
+                      elasticsearch.k8s.elastic.co/cluster-name: elasticsearch
+                  topologyKey: kubernetes.io/hostname
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
@@ -23,11 +34,22 @@ spec:
         resources:
           requests:
             storage: 1Gi
-        storageClassName: storage-elasticsearch
+        storageClassName: standard #storage-elasticsearch
   - name: data-nodes
-    count: 1
+    count: 2
     config:
       node.roles: ["data"]
+    podTemplate:
+      spec:
+        affinity:
+          podAntiAffinity:
+            preferredDuringSchedulingIgnoredDuringExecution:
+              - weight: 100
+                podAffinityTerm:
+                  labelSelector:
+                    matchLabels:
+                      elasticsearch.k8s.elastic.co/cluster-name: elasticsearch
+                  topologyKey: kubernetes.io/hostname
     volumeClaimTemplates:
     - metadata:
         name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
@@ -37,7 +59,7 @@ spec:
         resources:
           requests:
             storage: 1Gi
-        storageClassName: storage-elasticsearch
+        storageClassName: standard #storage-elasticsearch
   http:
     tls:
       selfSignedCertificate:
