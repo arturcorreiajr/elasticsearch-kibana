@@ -59,9 +59,6 @@ data:
         Port            9200
         Http_User       ${ELASTICSEARCH_USERNAME}
         Http_Passwd     ${ELASTICSEARCH_PASSWORD}
-        tls:            off
-        tls_verify:     on
-        tls_ca:         /etc/certificate/ca.crt
         Index           fluent-bit
         AWS_Auth        On
         AWS_Region      us-east-2
@@ -166,7 +163,10 @@ spec:
         - name: ELASTICSEARCH_USERNAME
           value: elastic
         - name: ELASTICSEARCH_PASSWORD
-          value: t23lAi86dK8u1ve19ygI27vd
+          valueFrom:
+            secretKeyRef:
+              name: elasticsearch-es-elastic-user
+              key: elastic
         - name: ELASTIC_CLOUD_ID
           value:
         - name: ELASTIC_CLOUD_AUTH

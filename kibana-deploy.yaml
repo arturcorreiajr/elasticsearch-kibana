@@ -2,9 +2,10 @@ apiVersion: kibana.k8s.elastic.co/v1
 kind: Kibana
 metadata:
   name: kibana
+  namespace: elastic
 spec:
   version: 8.4.0
-  count: 1
+  count: 3
   elasticsearchRef:
     name: elasticsearch
   http:
@@ -22,6 +23,7 @@ metadata:
         kubernetes.io/ingress.class: nginx
         cert-manager.io/cluster-issuer: letsencrypt
     name: kibana-ingress
+    namespace: elastic
 spec:
     rules:
         - host: kibana.com.br
@@ -31,7 +33,7 @@ spec:
                     pathType: Prefix
                     backend:
                         service:
-                            name: kibana
+                            name: kibana-kb-http
                             port:
                                 number: 5601
 

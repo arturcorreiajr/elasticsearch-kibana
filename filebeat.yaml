@@ -3,13 +3,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: filebeat-config
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: filebeat
 data:
   filebeat.yml: |-
-    setup.dashboards.enabled: true
-    setup.template.enabled: true
     filebeat.autodiscover:
       providers:
         - type: kubernetes
@@ -38,7 +36,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: filebeat
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: filebeat
 spec:
@@ -73,7 +71,6 @@ spec:
             secretKeyRef:
               name: elasticsearch-es-elastic-user
               key: elastic
-         # value: PT993r1y7CJeDMAb0Y5r9H98
         - name: ELASTIC_CLOUD_ID
           value:
         - name: ELASTIC_CLOUD_AUTH
@@ -137,7 +134,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: filebeat
-  namespace: default
+  namespace: elastic
 roleRef:
   kind: ClusterRole
   name: filebeat
@@ -147,11 +144,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: filebeat
-  namespace: default
+  namespace: elastic
 subjects:
   - kind: ServiceAccount
     name: filebeat
-    namespace: default
+    namespace: elastic
 roleRef:
   kind: Role
   name: filebeat
@@ -161,11 +158,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: filebeat-kubeadm-config
-  namespace: default
+  namespace: elastic
 subjects:
   - kind: ServiceAccount
     name: filebeat
-    namespace: default
+    namespace: elastic
 roleRef:
   kind: Role
   name: filebeat-kubeadm-config
@@ -201,7 +198,7 @@ kind: Role
 metadata:
   name: filebeat
   # should be the namespace where filebeat is running
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: filebeat
 rules:
@@ -215,7 +212,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: filebeat-kubeadm-config
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: filebeat
 rules:
@@ -230,7 +227,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: filebeat
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: filebeat
 ---

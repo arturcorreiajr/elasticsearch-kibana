@@ -3,19 +3,11 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: metricbeat-daemonset-config
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: metricbeat
 data:
   metricbeat.yml: |-
-    setup.dashboards.enabled: true
-    setup.template.enabled: true
-    metricbeat.config.modules:
-      # Mounted `metricbeat-daemonset-modules` configmap:
-      path: ${path.config}/modules.d/*.yml
-      # Reload module configs as they change:
-      reload.enabled: false
-
     metricbeat.autodiscover:
       providers:
         - type: kubernetes
@@ -81,11 +73,12 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: metricbeat-daemonset-modules
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: metricbeat
 data:
   system.yml: |-
+    setup.dashboards.enabled: true
     - module: system
       period: 10s
       metricsets:
@@ -142,7 +135,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: metricbeat
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: metricbeat
 spec:
@@ -178,7 +171,6 @@ spec:
             secretKeyRef:
               name: elasticsearch-es-elastic-user
               key: elastic
-          #value: PT993r1y7CJeDMAb0Y5r9H98
         - name: NODE_NAME
           valueFrom:
             fieldRef:
@@ -242,7 +234,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: metricbeat
-  namespace: default
+  namespace: elastic
 roleRef:
   kind: ClusterRole
   name: metricbeat
@@ -252,11 +244,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: metricbeat
-  namespace: default
+  namespace: elastic
 subjects:
   - kind: ServiceAccount
     name: metricbeat
-    namespace: default
+    namespace: elastic
 roleRef:
   kind: Role
   name: metricbeat
@@ -266,11 +258,11 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: metricbeat-kubeadm-config
-  namespace: default
+  namespace: elastic
 subjects:
   - kind: ServiceAccount
     name: metricbeat
-    namespace: default
+    namespace: elastic
 roleRef:
   kind: Role
   name: metricbeat-kubeadm-config
@@ -327,7 +319,7 @@ kind: Role
 metadata:
   name: metricbeat
   # should be the namespace where metricbeat is running
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: metricbeat
 rules:
@@ -341,7 +333,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: metricbeat-kubeadm-config
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: metricbeat
 rules:
@@ -356,7 +348,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: metricbeat
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: metricbeat
 ---

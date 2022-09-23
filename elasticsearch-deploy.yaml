@@ -7,7 +7,7 @@ spec:
   version: 8.4.0
   nodeSets:
   - name: master
-    count: 2
+    count: 3
     config:
       node.roles: ["master"]
     podTemplate:
@@ -33,12 +33,12 @@ spec:
 #          volumeID: "vol-f37a03aa"
         resources:
           requests:
-            storage: 1Gi
-        storageClassName: standard #storage-elasticsearch
+            storage: 50Gi
+        storageClassName: storage-elasticsearch
   - name: data-nodes
-    count: 2
+    count: 3
     config:
-      node.roles: ["data"]
+      node.roles: ["data", "ingest"]
     podTemplate:
       spec:
         affinity:
@@ -56,12 +56,15 @@ spec:
       spec:
         accessModes:
         - ReadWriteOnce
+# Atachar volume existente ao elasticsearch
+#        awsElasticBlockStore: 
+#          fsType: "ext4" 
+#          volumeID: "vol-f37a03aa"
         resources:
           requests:
-            storage: 1Gi
-        storageClassName: standard #storage-elasticsearch
+            storage: 150Gi
+        storageClassName: storage-elasticsearch
   http:
     tls:
       selfSignedCertificate:
         disabled: true
----

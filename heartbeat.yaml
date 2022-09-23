@@ -3,7 +3,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: heartbeat-config
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: heartbeat
 data:
@@ -13,6 +13,7 @@ data:
       schedule: '@every 600s'
       urls:
         - "https://google.com.br/"
+
       check.response.status: 200
 
 
@@ -38,7 +39,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: heartbeat
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: heartbeat
 spec:
@@ -109,7 +110,7 @@ metadata:
 subjects:
 - kind: ServiceAccount
   name: heartbeat
-  namespace: default
+  namespace: elastic
 roleRef:
   kind: ClusterRole
   name: heartbeat
@@ -149,7 +150,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: heartbeat
-  namespace: default
+  namespace: elastic
   labels:
     k8s-app: heartbeat
 ---
