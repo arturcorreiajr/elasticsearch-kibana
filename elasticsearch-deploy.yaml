@@ -20,7 +20,7 @@ spec:
                 - key: alpha.eksctl.io/nodegroup-name
                   operator: In
                   values:
-                  - prudentte-tools-master-ng-m5-xlarge
+                  - cluster-tools-master-ng-m5-xlarge
           podAntiAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
               - weight: 100
@@ -57,7 +57,7 @@ spec:
                 - key: alpha.eksctl.io/nodegroup-name
                   operator: In
                   values:
-                  - prudentte-tools-workers-ng-m5-xlarge
+                  - cluster-tools-workers-ng-m5-xlarge
           podAntiAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
               - weight: 100
