@@ -1,23 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: fluent-bit
+  name: app-test-apm-deployment
   namespace: elastic
   labels:
-    app: fluent-bit
+    app: app-test-apm
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: fluent-bit
+      app: app-test-apm
   template:
     metadata:
       labels:
-        app: fluent-bit
+        app: app-test-apm
     spec:
       containers:
-      - name: fluent-bit
-        image: arturcorreiajunior/fluent-bit:latest
+      - name: app-test-apm
+        image: arturcorreiajunior/app-test-apm:latest
         resources:
           requests:
             memory: "64Mi"
@@ -27,20 +27,22 @@ spec:
             cpu: "500m"
         imagePullPolicy: Always
         ports:
-        - containerPort: 5170
+        - containerPort: 8080
           name: webinterface
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: fluent-bit-svc
+  name: app-test-apm
   namespace: elastic
   labels:
-    service: fluent-bit-svc
+    service: app-test-apm
 spec:
   type: NodePort
   ports:
   - port: 4000
     name: webinterface
   selector:
-    app: fluent-bit-svc
+    app: app-test-apm
+
+    

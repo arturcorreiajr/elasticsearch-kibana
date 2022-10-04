@@ -13,6 +13,14 @@ spec:
     podTemplate:
       spec:
         affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: alpha.eksctl.io/nodegroup-name
+                  operator: In
+                  values:
+                  - prudentte-tools-master-ng-m5-xlarge
           podAntiAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
               - weight: 100
@@ -36,12 +44,20 @@ spec:
             storage: 50Gi
         storageClassName: storage-elasticsearch
   - name: data-nodes
-    count: 3
+    count: 5
     config:
       node.roles: ["data", "ingest"]
     podTemplate:
       spec:
         affinity:
+          nodeAffinity:
+            requiredDuringSchedulingIgnoredDuringExecution:
+              nodeSelectorTerms:
+              - matchExpressions:
+                - key: alpha.eksctl.io/nodegroup-name
+                  operator: In
+                  values:
+                  - prudentte-tools-workers-ng-m5-xlarge
           podAntiAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
               - weight: 100

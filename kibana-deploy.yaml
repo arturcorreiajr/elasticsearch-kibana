@@ -4,6 +4,20 @@ metadata:
   name: kibana
   namespace: elastic
 spec:
+  podTemplate:
+    metadata:
+      labels:
+        app: kibana
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: alpha.eksctl.io/nodegroup-name
+                operator: In
+                values:
+                - prudentte-tools-workers-ng-m5-xlarge
   version: 8.4.0
   count: 3
   elasticsearchRef:
@@ -19,23 +33,22 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-    annotations:
-        kubernetes.io/ingress.class: nginx
-        cert-manager.io/cluster-issuer: letsencrypt
-    name: kibana-ingress
-    namespace: elastic
+  name: ingress-kibana
+  namespace: elastic
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
 spec:
-    rules:
-        - host: kibana.com.br
-          http:
-              paths:
-                  - path: /
-                    pathType: Prefix
-                    backend:
-                        service:
-                            name: kibana-kb-http
-                            port:
-                                number: 5601
+  rules:
+    - host: kibana.com.br
+      http:
+        paths:
+          - pathType: Prefix
+            path: /
+            backend:
+              service:
+                name: kibana-kb-http
+                port:
+                  number: 5601
 
 
 

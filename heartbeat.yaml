@@ -12,7 +12,7 @@ data:
     - type: http
       schedule: '@every 600s'
       urls:
-        - "https://google.com.br/"
+        - "https://api.com.br/"
 
       check.response.status: 200
 
@@ -51,6 +51,15 @@ spec:
       labels:
         k8s-app: heartbeat
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: alpha.eksctl.io/nodegroup-name
+                operator: In
+                values:
+                - prudentte-tools-workers-ng-m5-xlarge
       serviceAccountName: heartbeat
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
