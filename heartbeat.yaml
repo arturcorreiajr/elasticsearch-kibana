@@ -59,7 +59,7 @@ spec:
               - key: alpha.eksctl.io/nodegroup-name
                 operator: In
                 values:
-                - cluster-tools-workers-ng-m5-xlarge
+                - tools-workers-ng-m5-xlarge
       serviceAccountName: heartbeat
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet

@@ -1,0 +1,155 @@
+GET ${exampleVariable1} // _search
+{
+  "query": {
+    "${exampleVariable2}": {} // match_all
+  }
+}
+PUT _snapshot/test
+{
+  "type": "s3",
+  "settings": {
+  "bucket": "elastic-index-backup-kibana",
+  "protocol": "https",
+  "compress" : "true",
+  "path_style_access": "true",
+  "access_key": "${accesskey}",
+  "secret_key": "${secretkey}"
+  }
+}
+GET /_cat/master?v
+GET /_cat/nodes?v
+GET /_cat/indices?v
+GET /_cat/shards?v
+GET /_cluster/health?level=shards
+
+PUT /_security/privilege
+{
+ "apm": {
+   "write_sourcemap": {
+     "actions": [ "sourcemap:write" ]
+   },
+   "write_event": {
+     "actions": [ "event:write" ]
+   },
+   "read_agent_config": {
+     "actions": [ "config_agent:read" ]
+   } }
+}
+
+POST _security/api_key
+{
+   "name": "apm-backend",
+   "role_descriptors": {
+     "apm-backend": {
+        "applications": [
+           {
+             "application": "apm",
+             "privileges": ["*"],
+             "resources": ["*"]
+            }
+          ]
+        }
+    }
+}
+POST /_security/api_key
+{
+  "name": "apm_02", 
+  "role_descriptors": {
+    "apm_writer": { 
+      "index": [
+        {
+          "names": ["apm-*"],
+          "privileges": ["create_index", "create_doc"]
+        },
+        {
+          "names": ["apm-*sourcemap"],
+          "privileges": ["read"]
+        }
+      ]
+    }
+  }
+}
+PUT _cluster/settings
+{
+  "persistent": {
+    "xpack.monitoring.collection.enabled": true,
+    "xpack.monitoring.elasticsearch.collection.enabled": false
+  }
+}
+GET _cluster/settings
+POST _security/api_key
+{
+   "name": "apm-backend",
+   "role_descriptors": {
+     "apm-backend": {
+        "applications": [
+           {
+             "application": "apm",
+             "privileges": ["*"],
+             "resources": ["*"]
+            }
+          ]
+        }
+    }
+}
+PUT /_security/privilege
+{
+ "apm": {
+   "write_sourcemap": {
+     "actions": [ "sourcemap:write" ]
+   },
+   "write_event": {
+     "actions": [ "event:write" ]
+   },
+   "read_agent_config": {
+     "actions": [ "config_agent:read" ]
+   } }
+}
+PUT _cluster/settings
+{
+  "persistent": {
+    "xpack.monitoring.collection.enabled": true,
+    "xpack.monitoring.elasticsearch.collection.enabled": false
+  }
+}
+POST /_security/role/apm_agent_key_role
+{
+   "cluster": [ "manage_own_api_key" ],
+   "applications": [
+      {
+         "application":"apm",
+         "privileges":[
+            "event:write",
+            "config_agent:read",
+            "sourcemap:write"
+         ],
+         "resources":[ "*" ]
+      },
+      {
+         "application":"kibana-.kibana",
+         "privileges":[ "feature_apm.all" ],
+         "resources":[ "space:default" ] 
+      }
+   ]
+}
+
+POST /_security/role/apm_agent_key_role
+{
+  "cluster": ["manage_own_api_key"],
+  "applications": [{
+    "application": "apm",
+    "privileges": ["all"],
+    "resources": ["*"]
+  }]
+}
+GET /_security/api_key
+
+PUT _snapshot/elastic-index-backup-kibana
+{
+  "type": "s3",
+  "settings": {
+    "client": "default",
+    "bucket": "elastic-index-backup-kibana",
+    "region": "us-east-2"
+  }
+}

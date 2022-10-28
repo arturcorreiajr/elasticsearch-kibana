@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: fluent-bit
-        image: arturcorreiajunior/fluent-bit:latest
+        image: misolucoestech/fluent-bit:latest
         resources:
           requests:
             memory: "64Mi"

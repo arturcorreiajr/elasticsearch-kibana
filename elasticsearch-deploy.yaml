@@ -1,17 +1,49 @@
+
 apiVersion: elasticsearch.k8s.elastic.co/v1
 kind: Elasticsearch
 metadata:
   name: elasticsearch
-  namespace: elastic
+  namespace: dev
 spec:
-  version: 8.4.0
+  version: 8.4.3
+  secureSettings:
+  - secretName: aws-credentials
   nodeSets:
   - name: master
-    count: 3
+    count: 1
     config:
-      node.roles: ["master"]
+      node.roles: ["master", "data_hot", "data_warm"]
+      xpack.monitoring.collection.enabled: "true" 
+      xpack.monitoring.elasticsearch.collection.enabled: "false" 
+#      xpack.security.http.ssl.enabled: "true"
+#      xpack.security.authc.token.enabled: "true"
+      xpack.security.authc.api_key.enabled: "true"
     podTemplate:
+      metadata: 
+        labels: 
+          stack-monitoring.elastic.co/type: es 
+        annotations: 
+          co.elastic.logs/enabled: "true"
       spec:
+        initContainers:
+        - name: add-access-keys
+          env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: aws-credentials
+                key: s3.client.default.access_key
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: aws-credentials
+                key: s3.client.default.secret_key
+          command:
+          - sh
+          - -c
+          - |
+            echo $AWS_ACCESS_KEY_ID | bin/elasticsearch-keystore add --stdin --force s3.client.default.access_key
+            echo $AWS_SECRET_ACCESS_KEY | bin/elasticsearch-keystore add --stdin --force s3.client.default.secret_key
         affinity:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -20,7 +52,7 @@ spec:
                 - key: alpha.eksctl.io/nodegroup-name
                   operator: In
                   values:
-                  - cluster-tools-master-ng-m5-xlarge
+                  - tools-master-ng-m5-xlarge
           podAntiAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
               - weight: 100
@@ -41,14 +73,38 @@ spec:
 #          volumeID: "vol-f37a03aa"
         resources:
           requests:
-            storage: 50Gi
+            storage: 1Gi
         storageClassName: storage-elasticsearch
   - name: data-nodes
-    count: 5
+    count: 1
     config:
-      node.roles: ["data", "ingest"]
+      node.roles: ["data", "ingest", "data_hot", "data_warm"]
+      xpack.monitoring.collection.enabled: "true" 
+      xpack.monitoring.elasticsearch.collection.enabled: "false" 
+#      xpack.security.http.ssl.enabled: "true"
+#      xpack.security.authc.token.enabled: "true"
+      xpack.security.authc.api_key.enabled: "true"
     podTemplate:
       spec:
+        initContainers:
+        - name: add-access-keys
+          env:
+          - name: AWS_ACCESS_KEY_ID
+            valueFrom:
+              secretKeyRef:
+                name: aws-credentials
+                key: s3.client.default.access_key
+          - name: AWS_SECRET_ACCESS_KEY
+            valueFrom:
+              secretKeyRef:
+                name: aws-credentials
+                key: s3.client.default.secret_key
+          command:
+          - sh
+          - -c
+          - |
+            echo $AWS_ACCESS_KEY_ID | bin/elasticsearch-keystore add --stdin --force s3.client.default.access_key
+            echo $AWS_SECRET_ACCESS_KEY | bin/elasticsearch-keystore add --stdin --force s3.client.default.secret_key
         affinity:
           nodeAffinity:
             requiredDuringSchedulingIgnoredDuringExecution:
@@ -57,7 +113,7 @@ spec:
                 - key: alpha.eksctl.io/nodegroup-name
                   operator: In
                   values:
-                  - cluster-tools-workers-ng-m5-xlarge
+                  - tools-workers-ng-m5-xlarge
           podAntiAffinity:
             preferredDuringSchedulingIgnoredDuringExecution:
               - weight: 100
@@ -78,7 +134,7 @@ spec:
 #          volumeID: "vol-f37a03aa"
         resources:
           requests:
-            storage: 150Gi
+            storage: 1Gi
         storageClassName: storage-elasticsearch
   http:
     tls:
