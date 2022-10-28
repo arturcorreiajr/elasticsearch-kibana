@@ -10,7 +10,7 @@ data:
   apm-server.yml: |-
     apm-server:
       host: "0.0.0.0:8200"
-      #secret_token: cXlHdzE0TUJkakZBUk9CTmVwZzI6MVlZdklSWHNUUXE5alQyZkhWMFV2QQ==
+      #secret_token: sdfjgjepoghepfoghh3prohepgoiehgrpoiih3rihh-r
       ilm:
         enabled: "true"
         setup:
