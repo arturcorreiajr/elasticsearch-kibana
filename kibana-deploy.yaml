@@ -17,7 +17,7 @@ spec:
               - key: alpha.eksctl.io/nodegroup-name
                 operator: In
                 values:
-                - prudentte-tools-workers-ng-m5-xlarge
+                - server-tools-workers-ng-m5-xlarge
   version: 8.4.3
   count: 3
   elasticsearchRef:
